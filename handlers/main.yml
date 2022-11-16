@@ -1,0 +1,40 @@
+---
+# Copyright 2022 City Network International AB
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+
+- name: Stop zookeeper
+  service:
+    name: "{{ zookeeper_service['name'] }}"
+    state: "stopped"
+  listen:
+    - Restart zookeeper
+    - systemd service changed
+
+- name: Symlink zookeeper
+  file:
+    src: "/opt/zookeeper-{{ zookeeper_download_version }}"
+    dest: /opt/zookeeper
+    owner: "{{ zookeeper_system_user_name }}"
+    group: "{{ zookeeper_system_group_name }}"
+    state: link
+  register: symlink_zookeeper
+
+- name: Start zookeeper
+  service:
+    name: "{{ zookeeper_service['name'] }}"
+    enabled: True
+    state: "started"
+  listen:
+    - Restart zookeeper
+    - systemd service changed

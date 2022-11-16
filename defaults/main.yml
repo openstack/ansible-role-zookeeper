@@ -1,0 +1,66 @@
+---
+# Copyright 2022 City Network International AB
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+
+# Define zookepeer version and download URI
+zookeeper_download_version: 3.7.1
+zookeeper_download_version_checksum: sha512:9103628a50745fa1a289bca666fda4a9c08ec17c55cf13e66887e7ba76e93dbae60a1f1ffd6c10798be3a16069344ecbc00cebb29bf03d9cd7096ccd098ed011
+zookeeper_download_url: "https://dlcdn.apache.org/zookeeper/zookeeper-{{ zookeeper_download_version }}/apache-zookeeper-{{ zookeeper_download_version }}-bin.tar.gz"
+
+# Define zookeeper clustering option
+zookeeper_cluster_members: "{{ groups['zookeeper_all'] }}"
+# The fist port is used by followers to connect to the leader
+# The second one is used for leader election
+zookeeper_cluster_peer_ports: 2888:3888
+# This variable is used to define what fact which will be taken out of
+# hostvars for each cluster member as it's address
+zookeeper_cluster_address_hostvars_key: "ansible_host"
+zookeeper_client_port: 2181
+
+# Define operating system user/group names
+zookeeper_system_user_name: zookeeper
+zookeeper_system_group_name: zookeeper
+zookeeper_system_comment: zookeeper system user
+zookeeper_system_shell: /bin/false
+zookeeper_system_user_home: /var/lib/zookeeper
+
+zookeeper_file_zoo_conf_mode: 0644
+zookeeper_config_dir: "/etc/zookeeper"
+zookeeper_data_dir: "{{ zookeeper_system_user_home }}"
+zookeeper_data_log_dir: "{{ zookeeper_data_dir }}/log"
+zookeeper_file_myid_dest: "{{ zookeeper_data_dir }}/myid"
+
+
+# Set the package install state for distribution packages
+zookeeper_package_requirements: "{{ _zookeeper_package_requirements }}"
+zookeeper_package_state: "{{ package_state | default('latest') }}"
+
+# autopurge configuration
+# Amount of most recent snapshots and the corresponding transaction logs to keep
+zookeeper_snap_retain_count: 3
+# The time interval in hours for which the purge task has to be triggered
+zookeeper_purge_interval: 1
+
+# Service configuration
+zookeeper_service:
+  name: zookeeper
+  execstarts: "/opt/zookeeper/bin/zkServer.sh --config {{ zookeeper_config_dir }} start-foreground"
+  execstops: "/opt/zookeeper/bin/zkServer.sh --config {{ zookeeper_config_dir }} stop"
+
+zookeeper_init_config_overrides: {}
+
+zookeeper_commands_whitelist:
+  - stat
+  - ruok
+  - isro

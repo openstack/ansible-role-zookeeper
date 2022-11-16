@@ -1,0 +1,11 @@
+
+---
+- name: Install zookeeper cluster
+  hosts: zookeeper_all
+  become: yes
+  vars:
+    management_address: "{{ ansible_host }}"
+  roles:
+    - role: zookeeper
+      tags:
+        - zookeeper

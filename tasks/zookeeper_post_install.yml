@@ -1,0 +1,43 @@
+---
+# Copyright 2022 City Network International AB
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+
+- name: Copy common zookeeper configuration
+  copy:
+    src: "{{ item }}"
+    dest: "{{ zookeeper_config_dir }}/{{ item | basename }}"
+    remote_src: yes
+  with_items:
+    - "/opt/zookeeper-{{ zookeeper_download_version }}/conf/configuration.xsl"
+    - "/opt/zookeeper-{{ zookeeper_download_version }}/conf/log4j.properties"
+  notify: Restart zookeeper
+
+- name: Install zookeeper configuration
+  template:
+    dest: /etc/zookeeper/zoo.cfg
+    group: "{{ zookeeper_system_group_name }}"
+    mode: "{{ zookeeper_file_zoo_conf_mode }}"
+    owner: "{{ zookeeper_system_user_name }}"
+    src: zoo.cfg.j2
+  notify: Restart zookeeper
+
+- name: Setting cluster id
+  copy:
+    dest: "{{ zookeeper_file_myid_dest }}"
+    group: "{{ zookeeper_system_group_name }}"
+    mode: "{{ zookeeper_file_zoo_conf_mode }}"
+    owner: "{{ zookeeper_system_user_name }}"
+    content: "{{ zookeeper_cluster_id }}"
+  notify: Restart zookeeper
+  when: zookeeper_cluster_members | length > 0

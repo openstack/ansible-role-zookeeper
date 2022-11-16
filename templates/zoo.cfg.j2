@@ -1,0 +1,36 @@
+# The number of milliseconds of each tick
+tickTime=2000
+# The number of ticks that the initial
+# synchronization phase can take
+initLimit=10
+# The number of ticks that can pass between
+# sending a request and getting an acknowledgement
+syncLimit=5
+# Place the dataLogDir to a separate physical disc for better performance
+dataLogDir={{ zookeeper_data_log_dir }}
+# the directory where the snapshot is stored.
+# do not use /tmp for storage, /tmp here is just
+# example sakes.
+dataDir={{ zookeeper_data_dir }}
+# the port at which the clients will connect
+clientPort={{ zookeeper_client_port }}
+
+{% if zookeeper_cluster_members | length > 1 %}
+# specify all zookeeper servers
+{% for server in zookeeper_cluster_members %}
+server.{{ loop.index }}={{ hostvars[server][zookeeper_cluster_address_hostvars_key] }}:{{ zookeeper_cluster_peer_ports }}
+{% endfor %}
+{% endif %}
+
+# Be sure to read the maintenance section of the
+# administrator guide before turning on autopurge.
+#
+# http://zookeeper.apache.org/doc/current/zookeeperAdmin.html#sc_maintenance
+#
+# The number of snapshots to retain in dataDir
+autopurge.snapRetainCount={{ zookeeper_snap_retain_count }}
+# Purge task interval in hours
+# Set to "0" to disable auto purge feature
+autopurge.purgeInterval={{ zookeeper_purge_interval }}
+
+4lw.commands.whitelist={{ zookeeper_commands_whitelist | join(', ') }}
