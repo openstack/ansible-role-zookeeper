@@ -17,3 +17,5 @@ _zookeeper_package_requirements:
   - openjdk-11-jre-headless
   - tar
   - gzip
+
+_zookeeper_ssl_truststore_location: /etc/ssl/certs/ca-certificates.crt

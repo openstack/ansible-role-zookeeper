@@ -34,3 +34,25 @@ autopurge.snapRetainCount={{ zookeeper_snap_retain_count }}
 autopurge.purgeInterval={{ zookeeper_purge_interval }}
 
 4lw.commands.whitelist={{ zookeeper_commands_whitelist | join(', ') }}
+
+{% if zookeeper_ssl_client_enable | bool or zookeeper_ssl_quorum_enable | bool %}
+serverCnxnFactory=org.apache.zookeeper.server.NettyServerCnxnFactory
+{% endif %}
+
+{% if zookeeper_ssl_client_enable | bool %}
+secureClientPort={{ zookeeper_secure_client_port }}
+ssl.keyStore.location={{ zookeeper_ssl_keystore_location }}
+ssl.trustStore.location={{ zookeeper_ssl_truststore_location }}
+ssl.enabledProtocols={{ zookeeper_ssl_protocols | join(',') }}
+ssl.trustStore.type=PEM
+ssl.clientAuth={{ zookeeper_ssl_client_auth }}
+{% endif %}
+
+{% if zookeeper_ssl_quorum_enable | bool %}
+sslQuorum=true
+ssl.quorum.keyStore.location={{ zookeeper_ssl_keystore_location }}
+ssl.quorum.trustStore.location={{ zookeeper_ssl_truststore_location }}
+ssl.quorum.enabledProtocols={{ zookeeper_ssl_protocols | join(',') }}
+ssl.quorum.trustStore.type=PEM
+ssl.quorum.clientAuth={{ zookeeper_ssl_quorum_client_auth }}
+{% endif %}

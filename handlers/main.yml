@@ -13,6 +13,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+- name: regen pem
+  shell: >
+        cat {{ zookeeper_ssl_cert }} $(test -f {{ zookeeper_ssl_ca_cert }} && echo {{ zookeeper_ssl_ca_cert }}) {{ zookeeper_ssl_key }} > {{ zookeeper_ssl_keystore_location }}
+  notify: Restart zookeeper
+  listen:
+    - cert installed
+
 - name: Stop zookeeper
   service:
     name: "{{ zookeeper_service['name'] }}"

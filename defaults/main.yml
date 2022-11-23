@@ -22,11 +22,106 @@ zookeeper_download_url: "https://dlcdn.apache.org/zookeeper/zookeeper-{{ zookeep
 zookeeper_cluster_members: "{{ groups['zookeeper_all'] }}"
 # The fist port is used by followers to connect to the leader
 # The second one is used for leader election
-zookeeper_cluster_peer_ports: 2888:3888
 # This variable is used to define what fact which will be taken out of
 # hostvars for each cluster member as it's address
 zookeeper_cluster_address_hostvars_key: "ansible_host"
+
+# Ports and TLS
+zookeeper_cluster_peer_ports: 2888:3888
 zookeeper_client_port: 2181
+zookeeper_secure_client_port: 2281
+zookeeper_ssl_client_enable: True
+zookeeper_ssl_quorum_enable: True
+zookeeper_ssl_protocols:
+  - TLSv1.2
+  - TLSv1.3
+
+# Storage location for SSL certificate authority
+zookeeper_pki_dir: "{{ openstack_pki_dir | default('/etc/pki/zookeeper-ca') }}"
+
+# Delegated host for operating the certificate authority
+zookeeper_pki_setup_host: "{{ openstack_pki_setup_host | default('localhost') }}"
+
+# Create a certificate authority if one does not already exist
+zookeeper_pki_create_ca: "{{ openstack_pki_authorities is not defined | bool }}"
+zookeeper_pki_regen_ca: ''
+zookeeper_pki_authorities:
+  - name: "ZookeeperRoot"
+    country: "GB"
+    state_or_province_name: "England"
+    organization_name: "Example Corporation"
+    organizational_unit_name: "IT Security"
+    cn: "Zookeeper Root CA"
+    provider: selfsigned
+    basic_constraints: "CA:TRUE"
+    key_usage:
+      - digitalSignature
+      - cRLSign
+      - keyCertSign
+    not_after: "+3650d"
+  - name: "ZookeeperIntermediate"
+    country: "GB"
+    state_or_province_name: "England"
+    organization_name: "Example Corporation"
+    organizational_unit_name: "IT Security"
+    cn: "Zookeeper Intermediate CA"
+    provider: ownca
+    basic_constraints: "CA:TRUE,pathlen:0"
+    key_usage:
+      - digitalSignature
+      - cRLSign
+      - keyCertSign
+    not_after: "+3650d"
+    signed_by: "ZookeeperRoot"
+
+# Installation details for certificate authorities
+zookeeper_pki_install_ca:
+  - name: "ZookeeperRoot"
+    condition: "{{ zookeeper_pki_create_ca }}"
+
+# Zookeeper server certificate
+zookeeper_pki_keys_path: "{{ zookeeper_pki_dir ~ '/certs/private/' }}"
+zookeeper_pki_certs_path: "{{ zookeeper_pki_dir ~ '/certs/certs/' }}"
+zookeeper_pki_intermediate_cert_name: "{{ openstack_pki_service_intermediate_cert_name | default('ZookeeperIntermediate') }}"
+zookeeper_pki_intermediate_cert_path: "{{ zookeeper_pki_dir ~ '/roots/' ~ zookeeper_pki_intermediate_cert_name ~ '/certs/' ~ zookeeper_pki_intermediate_cert_name ~ '.crt' }}"
+zookeeper_pki_regen_cert: ''
+zookeeper_pki_certificates:
+  - name: "zookeeper_{{ ansible_facts['hostname'] }}"
+    provider: ownca
+    cn: "{{ hostvars[inventory_hostname][zookeeper_cluster_address_hostvars_key] }}"
+    san: "{{ 'DNS:' ~ ansible_facts['fqdn'] ~ ',IP:' ~ ansible_host }}"
+    signed_by: "{{ zookeeper_pki_intermediate_cert_name }}"
+    condition: "{{ zookeeper_ssl_client_enable or zookeeper_ssl_quorum_enable }}"
+    key_format: pkcs8
+
+# Installation details for SSL certificates
+zookeeper_pki_install_certificates:
+  - src: "{{ zookeeper_user_ssl_cert | default(zookeeper_pki_certs_path ~ 'zookeeper_' ~ ansible_facts['hostname'] ~ '.crt') }}"
+    dest: "{{ zookeeper_ssl_cert }}"
+    owner: "{{ zookeeper_system_user_name }}"
+    group: "{{ zookeeper_system_group_name }}"
+    mode: "0644"
+    condition: "{{ zookeeper_ssl_client_enable or zookeeper_ssl_quorum_enable }}"
+  - src: "{{ zookeeper_user_ssl_key | default(zookeeper_pki_keys_path ~ 'zookeeper_' ~ ansible_facts['hostname'] ~ '.key.pem') }}"
+    dest: "{{ zookeeper_ssl_key }}"
+    owner: "{{ zookeeper_system_user_name }}"
+    group: "{{ zookeeper_system_group_name }}"
+    mode: "0600"
+    condition: "{{ zookeeper_ssl_client_enable or zookeeper_ssl_quorum_enable }}"
+  - src: "{{ zookeeper_user_ssl_ca_cert | default(zookeeper_pki_intermediate_cert_path) }}"
+    dest: "{{ zookeeper_ssl_ca_cert }}"
+    owner: "{{ zookeeper_system_user_name }}"
+    group: "{{ zookeeper_system_group_name }}"
+    mode: "0644"
+    condition: "{{ zookeeper_ssl_client_enable or zookeeper_ssl_quorum_enable }}"
+
+zookeeper_ssl_cert: "{{ zookeeper_config_dir }}/certs/certs/zookeeper.crt"
+zookeeper_ssl_key: "{{ zookeeper_config_dir }}/certs/private/zookeeper.key"
+zookeeper_ssl_ca_cert: "{{ zookeeper_config_dir }}/certs/certs/zookeeper-ca.crt"
+zookeeper_ssl_keystore_location: "{{ zookeeper_config_dir }}/certs/private/zookeeper.pem"
+zookeeper_ssl_truststore_location: "{{ _zookeeper_ssl_truststore_location }}"
+zookeeper_ssl_client_auth: want
+zookeeper_ssl_quorum_client_auth: need
 
 # Define operating system user/group names
 zookeeper_system_user_name: zookeeper

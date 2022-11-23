@@ -40,6 +40,23 @@
   tags:
     - zookeeper-config
 
+- name: Create and install SSL certificates
+  include_role:
+     name: pki
+  vars:
+    pki_setup_host: "{{ zookeeper_pki_setup_host }}"
+    pki_dir: "{{ zookeeper_pki_dir }}"
+    pki_create_ca: "{{ zookeeper_pki_create_ca }}"
+    pki_authorities: "{{ zookeeper_pki_authorities }}"
+    pki_install_ca: "{{ zookeeper_pki_install_ca }}"
+    pki_regen_ca: "{{ zookeeper_pki_regen_ca }}"
+    pki_create_certificates: "{{ zookeeper_user_ssl_cert is not defined and zookeeper_user_ssl_key is not defined }}"
+    pki_regen_cert: "{{ zookeeper_pki_regen_cert }}"
+    pki_certificates: "{{ zookeeper_pki_certificates }}"
+    pki_install_certificates: "{{ zookeeper_pki_install_certificates }}"
+  when:
+    - zookeeper_ssl_client_enable or zookeeper_ssl_quorum_enable
+
 - name: Run the systemd service role
   include_role:
     name: systemd_service
