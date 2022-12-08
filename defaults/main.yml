@@ -159,3 +159,4 @@ zookeeper_commands_whitelist:
   - stat
   - ruok
   - isro
+  - envi
