@@ -56,3 +56,8 @@ ssl.quorum.enabledProtocols={{ zookeeper_ssl_protocols | join(',') }}
 ssl.quorum.trustStore.type=PEM
 ssl.quorum.clientAuth={{ zookeeper_ssl_quorum_client_auth }}
 {% endif %}
+
+{% if zookeeper_prometheus_enable | bool %}
+metricsProvider.className=org.apache.zookeeper.metrics.prometheus.PrometheusMetricsProvider
+metricsProvider.httpPort={{ zookeeper_prometheus_port }}
+{% endif %}
