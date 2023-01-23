@@ -73,7 +73,7 @@
     systemd_services:
       - service_name: "{{ zookeeper_service['name'] }}"
         enabled: yes
-        state: stopped
+        restart_changed: false
         execstarts: "{{ zookeeper_service['execstarts'] }}"
         execstops: "{{ zookeeper_service['execstops'] }}"
         config_overrides: "{{ zookeeper_init_config_overrides }}"
