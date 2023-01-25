@@ -160,3 +160,6 @@ zookeeper_commands_whitelist:
   - ruok
   - isro
   - envi
+
+zookeeper_prometheus_enable: False
+zookeeper_prometheus_port: 7000
