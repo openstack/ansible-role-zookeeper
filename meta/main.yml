@@ -16,8 +16,9 @@
 galaxy_info:
   author: OpenStack-Ansible Contributors
   role_name: zookeeper
+  namespace: openstack
   description: |
     Zookeeper  is a high-performance coordination service for distributed applications.
   license: Apache
-  min_ansible_version: 5.0
+  min_ansible_version: "5.0"
 dependencies: []

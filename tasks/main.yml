@@ -28,21 +28,24 @@
   tags:
     - always
 
-- import_tasks: zookeeper_pre_install.yml
+- name: Importing zookeeper_pre_install tasks
+  import_tasks: zookeeper_pre_install.yml
   tags:
     - zookeeper-install
 
-- import_tasks: zookeeper_install.yml
+- name: Importing zookeeper_install tasks
+  import_tasks: zookeeper_install.yml
   tags:
     - zookeeper-install
 
-- import_tasks: zookeeper_post_install.yml
+- name: Importing zookeeper_post_install tasks
+  import_tasks: zookeeper_post_install.yml
   tags:
     - zookeeper-config
 
 - name: Create and install SSL certificates
   include_role:
-     name: pki
+    name: pki
   vars:
     pki_setup_host: "{{ zookeeper_pki_setup_host }}"
     pki_dir: "{{ zookeeper_pki_dir }}"
@@ -66,10 +69,10 @@
     systemd_tempd_prefix: openstack
     systemd_slice_name: zookeeper
     systemd_lock_path: /var/lock/zookeeper
-    systemd_CPUAccounting: true
-    systemd_BlockIOAccounting: true
-    systemd_MemoryAccounting: true
-    systemd_TasksAccounting: true
+    systemd_service_cpu_accounting: true
+    systemd_service_block_io_accounting: true
+    systemd_service_memory_accounting: true
+    systemd_service_tasks_accounting: true
     systemd_services:
       - service_name: "{{ zookeeper_service['name'] }}"
         enabled: yes

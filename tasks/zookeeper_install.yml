@@ -28,6 +28,7 @@
     url: "{{ zookeeper_download_url }}"
     dest: "/opt/{{ zookeeper_download_url | basename }}"
     checksum: "{{ zookeeper_download_version_checksum }}"
+    mode: "0644"
   register: zookeeper_download
 
 - name: Unarchive downloaded zookeeper

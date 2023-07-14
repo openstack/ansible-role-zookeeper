@@ -13,7 +13,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-- name: create the system group
+- name: Create the system group
   group:
     name: "{{ zookeeper_system_group_name }}"
     gid: "{{ zookeeper_system_group_gid | default(omit) }}"
@@ -36,7 +36,7 @@
     path: "{{ item }}"
     owner: "{{ zookeeper_system_user_name }}"
     group: "{{ zookeeper_system_group_name }}"
-    mode: 0750
+    mode: "0750"
     state: directory
   with_items:
     - "{{ zookeeper_config_dir }}"

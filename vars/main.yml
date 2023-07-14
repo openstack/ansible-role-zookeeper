@@ -15,7 +15,7 @@
 
 zookeeper_cluster_id: >-
   {%- for member in zookeeper_cluster_members -%}
-    {%- if hostvars[member]['ansible_host'] == ansible_host -%}
+  {%-   if hostvars[member]['ansible_host'] == ansible_host -%}
     {{ loop.index }}
-    {%- endif -%}
+  {%-   endif -%}
   {%- endfor -%}

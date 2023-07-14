@@ -15,8 +15,10 @@
 
 # Define zookepeer version and download URI
 zookeeper_download_version: 3.7.1
-zookeeper_download_version_checksum: sha512:9103628a50745fa1a289bca666fda4a9c08ec17c55cf13e66887e7ba76e93dbae60a1f1ffd6c10798be3a16069344ecbc00cebb29bf03d9cd7096ccd098ed011
-zookeeper_download_url: "https://dlcdn.apache.org/zookeeper/zookeeper-{{ zookeeper_download_version }}/apache-zookeeper-{{ zookeeper_download_version }}-bin.tar.gz"
+zookeeper_download_version_checksum: >-
+  sha512:9103628a50745fa1a289bca666fda4a9c08ec17c55cf13e66887e7ba76e93dbae60a1f1ffd6c10798be3a16069344ecbc00cebb29bf03d9cd7096ccd098ed011
+zookeeper_download_url: >-
+  https://dlcdn.apache.org/zookeeper/zookeeper-{{ zookeeper_download_version }}/apache-zookeeper-{{ zookeeper_download_version }}-bin.tar.gz
 
 # Define zookeeper clustering option
 zookeeper_cluster_members: "{{ groups['zookeeper_all'] }}"
@@ -83,7 +85,8 @@ zookeeper_pki_install_ca:
 zookeeper_pki_keys_path: "{{ zookeeper_pki_dir ~ '/certs/private/' }}"
 zookeeper_pki_certs_path: "{{ zookeeper_pki_dir ~ '/certs/certs/' }}"
 zookeeper_pki_intermediate_cert_name: "{{ openstack_pki_service_intermediate_cert_name | default('ZookeeperIntermediate') }}"
-zookeeper_pki_intermediate_cert_path: "{{ zookeeper_pki_dir ~ '/roots/' ~ zookeeper_pki_intermediate_cert_name ~ '/certs/' ~ zookeeper_pki_intermediate_cert_name ~ '.crt' }}"
+zookeeper_pki_intermediate_cert_path: >-
+  {{ zookeeper_pki_dir ~ '/roots/' ~ zookeeper_pki_intermediate_cert_name ~ '/certs/' ~ zookeeper_pki_intermediate_cert_name ~ '.crt' }}
 zookeeper_pki_regen_cert: ''
 zookeeper_pki_certificates:
   - name: "zookeeper_{{ ansible_facts['hostname'] }}"
@@ -130,7 +133,7 @@ zookeeper_system_comment: zookeeper system user
 zookeeper_system_shell: /bin/false
 zookeeper_system_user_home: /var/lib/zookeeper
 
-zookeeper_file_zoo_conf_mode: 0644
+zookeeper_file_zoo_conf_mode: "0644"
 zookeeper_config_dir: "/etc/zookeeper"
 zookeeper_data_dir: "{{ zookeeper_system_user_home }}"
 zookeeper_data_log_dir: "{{ zookeeper_data_dir }}/log"
