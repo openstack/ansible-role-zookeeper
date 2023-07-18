@@ -17,7 +17,6 @@
   shell: >-
     cat {{ zookeeper_ssl_cert }} $(test -f {{ zookeeper_ssl_ca_cert }} &&
       echo {{ zookeeper_ssl_ca_cert }}) {{ zookeeper_ssl_key }} > {{ zookeeper_ssl_keystore_location }}
-  notify: Restart zookeeper
   listen:
     - cert installed
 
@@ -28,6 +27,7 @@
   listen:
     - Restart zookeeper
     - systemd service changed
+    - cert installed
 
 - name: Symlink zookeeper
   file:
@@ -46,3 +46,4 @@
   listen:
     - Restart zookeeper
     - systemd service changed
+    - cert installed
