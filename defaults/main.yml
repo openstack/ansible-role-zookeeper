@@ -14,9 +14,9 @@
 # under the License.
 
 # Define zookepeer version and download URI
-zookeeper_download_version: 3.7.1
+zookeeper_download_version: 3.8.3
 zookeeper_download_version_checksum: >-
-  sha512:9103628a50745fa1a289bca666fda4a9c08ec17c55cf13e66887e7ba76e93dbae60a1f1ffd6c10798be3a16069344ecbc00cebb29bf03d9cd7096ccd098ed011
+  sha512:eb1a5e79fe55fa50e36021ca8b752e40584d5e24f23985c43e9f56abfbf23c0239dce37d18f27213c9a38fcb6f68daf1a9468fc352e6ac2364faaf9b56145bdf
 zookeeper_download_url: >-
   https://archive.apache.org/dist/zookeeper/zookeeper-{{ zookeeper_download_version }}/apache-zookeeper-{{ zookeeper_download_version }}-bin.tar.gz
 

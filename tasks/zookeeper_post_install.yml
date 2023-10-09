@@ -21,7 +21,7 @@
     mode: "0644"
   with_items:
     - "/opt/zookeeper-{{ zookeeper_download_version }}/conf/configuration.xsl"
-    - "/opt/zookeeper-{{ zookeeper_download_version }}/conf/log4j.properties"
+    - "/opt/zookeeper-{{ zookeeper_download_version }}/conf/logback.xml"
   notify: Restart zookeeper
 
 - name: Install zookeeper configuration
