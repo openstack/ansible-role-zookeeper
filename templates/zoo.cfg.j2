@@ -18,7 +18,7 @@ clientPort={{ zookeeper_client_port }}
 {% if zookeeper_cluster_members | length > 1 %}
 # specify all zookeeper servers
 {% for server in zookeeper_cluster_members %}
-server.{{ loop.index }}={{ hostvars[server][zookeeper_cluster_address_hostvars_key] }}:{{ zookeeper_cluster_peer_ports }}
+server.{{ loop.index }}={{ hostvars[server][zookeeper_cluster_address_hostvars_key] | ansible.utils.ipwrap }}:{{ zookeeper_cluster_peer_ports }}
 {% endfor %}
 {% endif %}
 
