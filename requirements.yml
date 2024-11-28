@@ -1,6 +1,15 @@
 ---
+collections:
+  - name: https://opendev.org/openstack/ansible-config_template
+    version: master
+    type: git
 
 roles:
+  - name: pki
+    src: https://opendev.org/openstack/ansible-role-pki
+    scm: git
+    version: master
+
   - name: systemd_service
     src: https://opendev.org/openstack/ansible-role-systemd_service
     scm: git
