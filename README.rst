@@ -2,7 +2,7 @@
 Zookeeper role for OpenStack-Ansible
 ====================================
 
-Ansible role to install uWSGI.
+Ansible role to install zookeeper.
 
 Documentation for the project can be found at:
   https://docs.openstack.org/ansible-role-zookeeper/latest/
@@ -16,5 +16,5 @@ The project source code repository is located at:
 The project home is at:
   https://launchpad.net/openstack-ansible
 
-The bugs is at:
+The bug tracker is at:
   https://bugs.launchpad.net/openstack-ansible
