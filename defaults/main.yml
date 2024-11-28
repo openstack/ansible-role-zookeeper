@@ -22,14 +22,14 @@ zookeeper_download_url: >-
 
 # Define zookeeper clustering option
 zookeeper_cluster_members: "{{ groups['zookeeper_all'] }}"
-# The fist port is used by followers to connect to the leader
+# The first port is used by followers to connect to the leader
 # The second one is used for leader election
+zookeeper_cluster_peer_ports: 2888:3888
 # This variable is used to define what fact which will be taken out of
 # hostvars for each cluster member as it's address
 zookeeper_cluster_address_hostvars_key: "ansible_host"
 
 # Ports and TLS
-zookeeper_cluster_peer_ports: 2888:3888
 zookeeper_client_port: 2181
 zookeeper_secure_client_port: 2281
 zookeeper_ssl_client_enable: True
