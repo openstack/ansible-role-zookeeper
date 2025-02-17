@@ -14,14 +14,14 @@
 # under the License.
 
 - name: Create the system group
-  group:
+  ansible.builtin.group:
     name: "{{ zookeeper_system_group_name }}"
     gid: "{{ zookeeper_system_group_gid | default(omit) }}"
     state: "present"
     system: "yes"
 
 - name: Create the zookeeper system user
-  user:
+  ansible.builtin.user:
     name: "{{ zookeeper_system_user_name }}"
     uid: "{{ zookeeper_system_user_name_uid | default(omit) }}"
     group: "{{ zookeeper_system_group_name }}"
@@ -32,7 +32,7 @@
     home: "{{ zookeeper_system_user_home }}"
 
 - name: Create required directories
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     owner: "{{ zookeeper_system_user_name }}"
     group: "{{ zookeeper_system_group_name }}"

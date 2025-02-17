@@ -14,7 +14,7 @@
 # under the License.
 
 - name: Install zookeeper requirements
-  package:
+  ansible.builtin.package:
     name: "{{ zookeeper_package_requirements }}"
     state: "{{ zookeeper_package_state }}"
   register: install_packages
@@ -24,7 +24,7 @@
   notify: Restart zookeeper
 
 - name: Download zookeeper binaries
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ zookeeper_download_url }}"
     dest: "/opt/{{ zookeeper_download_url | basename }}"
     checksum: "{{ zookeeper_download_version_checksum }}"
@@ -32,7 +32,7 @@
   register: zookeeper_download
 
 - name: Unarchive downloaded zookeeper
-  unarchive:
+  ansible.builtin.unarchive:
     dest: "/opt/zookeeper-{{ zookeeper_download_version }}"
     src: "/opt/{{ zookeeper_download_url | basename }}"
     remote_src: true

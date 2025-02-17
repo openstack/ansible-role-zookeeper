@@ -14,14 +14,14 @@
 # under the License.
 
 - name: Regen pem # noqa: no-changed-when
-  shell: >-
+  ansible.builtin.shell: >-
     cat {{ zookeeper_ssl_cert }} $(test -f {{ zookeeper_ssl_ca_cert }} &&
       echo {{ zookeeper_ssl_ca_cert }}) {{ zookeeper_ssl_key }} > {{ zookeeper_ssl_keystore_location }}
   listen:
     - cert installed
 
 - name: Stop zookeeper
-  service:
+  ansible.builtin.service:
     name: "{{ zookeeper_service['name'] }}"
     state: "stopped"
   listen:
@@ -30,7 +30,7 @@
     - cert installed
 
 - name: Symlink zookeeper
-  file:
+  ansible.builtin.file:
     src: "/opt/zookeeper-{{ zookeeper_download_version }}"
     dest: /opt/zookeeper
     owner: "{{ zookeeper_system_user_name }}"
@@ -39,7 +39,7 @@
   register: symlink_zookeeper
 
 - name: Start zookeeper
-  service:
+  ansible.builtin.service:
     name: "{{ zookeeper_service['name'] }}"
     enabled: true
     state: "started"

@@ -14,7 +14,7 @@
 # under the License.
 
 - name: Copy common zookeeper configuration
-  copy:
+  ansible.builtin.copy:
     src: "{{ item }}"
     dest: "{{ zookeeper_config_dir }}/{{ item | basename }}"
     remote_src: true
@@ -25,7 +25,7 @@
   notify: Restart zookeeper
 
 - name: Install zookeeper configuration
-  template:
+  ansible.builtin.template:
     dest: /etc/zookeeper/zoo.cfg
     group: "{{ zookeeper_system_group_name }}"
     mode: "{{ zookeeper_file_zoo_conf_mode }}"
@@ -34,7 +34,7 @@
   notify: Restart zookeeper
 
 - name: Setting cluster id
-  copy:
+  ansible.builtin.copy:
     dest: "{{ zookeeper_file_myid_dest }}"
     group: "{{ zookeeper_system_group_name }}"
     mode: "{{ zookeeper_file_zoo_conf_mode }}"
