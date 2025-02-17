@@ -35,7 +35,7 @@
   unarchive:
     dest: "/opt/zookeeper-{{ zookeeper_download_version }}"
     src: "/opt/{{ zookeeper_download_url | basename }}"
-    remote_src: yes
+    remote_src: true
     owner: "{{ zookeeper_system_user_name }}"
     group: "{{ zookeeper_system_group_name }}"
     extra_opts:

@@ -32,8 +32,8 @@ zookeeper_cluster_address_hostvars_key: "ansible_host"
 # Ports and TLS
 zookeeper_client_port: 2181
 zookeeper_secure_client_port: 2281
-zookeeper_ssl_client_enable: True
-zookeeper_ssl_quorum_enable: True
+zookeeper_ssl_client_enable: true
+zookeeper_ssl_quorum_enable: true
 zookeeper_ssl_protocols:
   - TLSv1.2
   - TLSv1.3
@@ -46,7 +46,7 @@ zookeeper_pki_setup_host: "{{ openstack_pki_setup_host | default('localhost') }}
 
 # Create a certificate authority if one does not already exist
 zookeeper_pki_create_ca: "{{ openstack_pki_authorities is not defined | bool }}"
-zookeeper_pki_regen_ca: ''
+zookeeper_pki_regen_ca: ""
 zookeeper_pki_authorities:
   - name: "ZookeeperRoot"
     country: "GB"
@@ -87,7 +87,7 @@ zookeeper_pki_certs_path: "{{ zookeeper_pki_dir ~ '/certs/certs/' }}"
 zookeeper_pki_intermediate_cert_name: "{{ openstack_pki_service_intermediate_cert_name | default('ZookeeperIntermediate') }}"
 zookeeper_pki_intermediate_cert_path: >-
   {{ zookeeper_pki_dir ~ '/roots/' ~ zookeeper_pki_intermediate_cert_name ~ '/certs/' ~ zookeeper_pki_intermediate_cert_name ~ '.crt' }}
-zookeeper_pki_regen_cert: ''
+zookeeper_pki_regen_cert: ""
 zookeeper_pki_certificates:
   - name: "zookeeper_{{ ansible_facts['hostname'] }}"
     provider: ownca
@@ -139,7 +139,6 @@ zookeeper_data_dir: "{{ zookeeper_system_user_home }}"
 zookeeper_data_log_dir: "{{ zookeeper_data_dir }}/log"
 zookeeper_file_myid_dest: "{{ zookeeper_data_dir }}/myid"
 
-
 # Set the package install state for distribution packages
 zookeeper_package_requirements: "{{ _zookeeper_package_requirements }}"
 zookeeper_package_state: "{{ package_state | default('latest') }}"
@@ -164,5 +163,5 @@ zookeeper_commands_whitelist:
   - isro
   - envi
 
-zookeeper_prometheus_enable: False
+zookeeper_prometheus_enable: false
 zookeeper_prometheus_port: 7000

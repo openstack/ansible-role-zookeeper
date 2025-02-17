@@ -17,7 +17,7 @@
   copy:
     src: "{{ item }}"
     dest: "{{ zookeeper_config_dir }}/{{ item | basename }}"
-    remote_src: yes
+    remote_src: true
     mode: "0644"
   with_items:
     - "/opt/zookeeper-{{ zookeeper_download_version }}/conf/configuration.xsl"

@@ -1,7 +1,7 @@
 ---
 - name: Install zookeeper cluster
   hosts: zookeeper_all
-  become: yes
+  become: true
   vars:
     management_address: "{{ ansible_host }}"
   roles:

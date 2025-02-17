@@ -41,7 +41,7 @@
 - name: Start zookeeper
   service:
     name: "{{ zookeeper_service['name'] }}"
-    enabled: True
+    enabled: true
     state: "started"
   listen:
     - Restart zookeeper

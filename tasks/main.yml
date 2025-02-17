@@ -75,7 +75,7 @@
     systemd_service_tasks_accounting: true
     systemd_services:
       - service_name: "{{ zookeeper_service['name'] }}"
-        enabled: yes
+        enabled: true
         restart_changed: false
         execstarts: "{{ zookeeper_service['execstarts'] }}"
         execstops: "{{ zookeeper_service['execstops'] }}"
