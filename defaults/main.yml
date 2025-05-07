@@ -88,35 +88,43 @@ zookeeper_pki_intermediate_cert_name: "{{ openstack_pki_service_intermediate_cer
 zookeeper_pki_intermediate_cert_path: >-
   {{ zookeeper_pki_dir ~ '/roots/' ~ zookeeper_pki_intermediate_cert_name ~ '/certs/' ~ zookeeper_pki_intermediate_cert_name ~ '.crt' }}
 zookeeper_pki_regen_cert: ""
+zookeeper_pki_backend: "{{ openstack_pki_backend | default('standalone') }}"
 zookeeper_pki_certificates:
   - name: "zookeeper_{{ ansible_facts['hostname'] }}"
-    provider: ownca
     cn: "{{ hostvars[inventory_hostname][zookeeper_cluster_address_hostvars_key] }}"
-    san: "{{ 'DNS:' ~ ansible_facts['fqdn'] ~ ',IP:' ~ hostvars[inventory_hostname][zookeeper_cluster_address_hostvars_key] }}"
-    signed_by: "{{ zookeeper_pki_intermediate_cert_name }}"
+    san: "{{ openstack_pki_san | default({'dns': [ansible_facts['fqdn']], 'ip': [hostvars[inventory_hostname][zookeeper_cluster_address_hostvars_key]]}) }}"
     condition: "{{ zookeeper_ssl_client_enable or zookeeper_ssl_quorum_enable }}"
     key_format: pkcs8
+    # standalone backend only
+    provider: ownca
+    signed_by: "{{ zookeeper_pki_intermediate_cert_name }}"
 
 # Installation details for SSL certificates
 zookeeper_pki_install_certificates:
-  - src: "{{ zookeeper_user_ssl_cert | default(zookeeper_pki_certs_path ~ 'zookeeper_' ~ ansible_facts['hostname'] ~ '.crt') }}"
+  - name: "zookeeper_{{ ansible_facts['hostname'] }}"
+    type: "certificate"
     dest: "{{ zookeeper_ssl_cert }}"
     owner: "{{ zookeeper_system_user_name }}"
     group: "{{ zookeeper_system_group_name }}"
-    mode: "0644"
     condition: "{{ zookeeper_ssl_client_enable or zookeeper_ssl_quorum_enable }}"
-  - src: "{{ zookeeper_user_ssl_key | default(zookeeper_pki_keys_path ~ 'zookeeper_' ~ ansible_facts['hostname'] ~ '.key.pem') }}"
+    # standalone backend only
+    src: "{{ zookeeper_user_ssl_cert }}"
+  - name: "zookeeper_{{ ansible_facts['hostname'] }}"
+    type: "private_key"
     dest: "{{ zookeeper_ssl_key }}"
     owner: "{{ zookeeper_system_user_name }}"
     group: "{{ zookeeper_system_group_name }}"
-    mode: "0600"
     condition: "{{ zookeeper_ssl_client_enable or zookeeper_ssl_quorum_enable }}"
-  - src: "{{ zookeeper_user_ssl_ca_cert | default(zookeeper_pki_intermediate_cert_path) }}"
+    # standalone backend only
+    src: "{{ zookeeper_user_ssl_key }}"
+  - name: "zookeeper_{{ ansible_facts['hostname'] }}"
+    type: "ca_bundle"
     dest: "{{ zookeeper_ssl_ca_cert }}"
     owner: "{{ zookeeper_system_user_name }}"
     group: "{{ zookeeper_system_group_name }}"
-    mode: "0644"
     condition: "{{ zookeeper_ssl_client_enable or zookeeper_ssl_quorum_enable }}"
+    # standalone backend only
+    src: "{{ zookeeper_user_ssl_ca_cert }}"
 
 zookeeper_ssl_cert: "{{ zookeeper_config_dir }}/certs/certs/zookeeper.crt"
 zookeeper_ssl_key: "{{ zookeeper_config_dir }}/certs/private/zookeeper.key"
@@ -125,6 +133,10 @@ zookeeper_ssl_keystore_location: "{{ zookeeper_config_dir }}/certs/private/zooke
 zookeeper_ssl_truststore_location: "{{ _zookeeper_ssl_truststore_location }}"
 zookeeper_ssl_client_auth: want
 zookeeper_ssl_quorum_client_auth: need
+
+zookeeper_user_ssl_cert: ""
+zookeeper_user_ssl_key: ""
+zookeeper_user_ssl_ca_cert: ""
 
 # Define operating system user/group names
 zookeeper_system_user_name: zookeeper

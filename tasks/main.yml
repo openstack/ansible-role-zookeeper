@@ -47,13 +47,14 @@
   ansible.builtin.include_role:
     name: pki
   vars:
+    pki_backend: "{{ zookeeper_pki_backend }}"
     pki_setup_host: "{{ zookeeper_pki_setup_host }}"
     pki_dir: "{{ zookeeper_pki_dir }}"
     pki_create_ca: "{{ zookeeper_pki_create_ca }}"
     pki_authorities: "{{ zookeeper_pki_authorities }}"
     pki_install_ca: "{{ zookeeper_pki_install_ca }}"
     pki_regen_ca: "{{ zookeeper_pki_regen_ca }}"
-    pki_create_certificates: "{{ zookeeper_user_ssl_cert is not defined and zookeeper_user_ssl_key is not defined }}"
+    pki_create_certificates: "{{ zookeeper_user_ssl_cert | length == 0 and zookeeper_user_ssl_key | length == 0 }}"
     pki_regen_cert: "{{ zookeeper_pki_regen_cert }}"
     pki_certificates: "{{ zookeeper_pki_certificates }}"
     pki_install_certificates: "{{ zookeeper_pki_install_certificates }}"
