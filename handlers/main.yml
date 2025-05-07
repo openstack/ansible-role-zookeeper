@@ -14,9 +14,21 @@
 # under the License.
 
 - name: Regen pem # noqa: no-changed-when
-  ansible.builtin.shell: >-
-    cat {{ zookeeper_ssl_cert }} $(test -f {{ zookeeper_ssl_ca_cert }} &&
-      echo {{ zookeeper_ssl_ca_cert }}) {{ zookeeper_ssl_key }} > {{ zookeeper_ssl_keystore_location }}
+  ansible.builtin.shell: |
+      {
+      files=(
+          "{{ zookeeper_ssl_cert }}"
+          "$(test -f {{ zookeeper_ssl_ca_cert }} && echo {{ zookeeper_ssl_ca_cert }})"
+          "{{ zookeeper_ssl_key }}"
+      )
+      for f in "${files[@]}"; do
+          cat "$f"
+          # adds a newline at the end of file's content if it doesn't exist
+          tail -c1 "$f" | grep -q '^$' || echo
+        done
+      } > {{ zookeeper_ssl_keystore_location }}
+  args:
+    executable: /bin/bash
   listen:
     - cert installed
 
