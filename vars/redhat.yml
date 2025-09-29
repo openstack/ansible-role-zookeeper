@@ -14,7 +14,7 @@
 # under the License.
 
 _zookeeper_package_requirements:
-  - java-11-openjdk-headless
+  - java-21-openjdk-headless
   - tar
   - gzip
 
