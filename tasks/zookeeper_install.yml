@@ -30,6 +30,9 @@
     checksum: "{{ zookeeper_download_version_checksum }}"
     mode: "0644"
   register: zookeeper_download
+  retries: 5
+  delay: 10
+  until: zookeeper_download is success
 
 - name: Unarchive downloaded zookeeper
   ansible.builtin.unarchive:
