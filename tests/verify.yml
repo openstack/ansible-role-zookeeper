@@ -1,0 +1,48 @@
+---
+- name: Verify zookeeper installation
+  hosts: zookeeper_all
+  tasks:
+    - name: Check zookeeper is running
+      ansible.builtin.shell: echo ruok | nc {{ zookeeper_node_address }} 2181
+      changed_when: false
+      register: _zookeeper_running
+
+    - name: Check zookeeper is rw
+      ansible.builtin.shell: echo isro | nc {{ zookeeper_node_address }} 2181
+      changed_when: false
+      register: _zookeeper_rw
+
+    - name: Check zookeeper stats
+      ansible.builtin.shell: echo stats | nc {{ zookeeper_node_address }} 2181
+      changed_when: false
+      register: _zookeeper_stats
+
+    - name: Parse Zookeeper stats
+      ansible.builtin.set_fact:
+        zookeeper_stats_parsed: "{{ dict(_zookeeper_stats.stdout | regex_findall('^([a-zA-Z][^:]*):[ \\t]*(.*)$', multiline=True)) }}"
+
+    - name: Verify status output
+      vars:
+        _zookeeper_modes: "{{ groups['zookeeper_all'] | map('extract', hostvars, ['zookeeper_stats_parsed', 'Mode']) }}"
+      ansible.builtin.assert:
+        that:
+          - _zookeeper_running.stdout == 'imok'
+          - _zookeeper_rw.stdout == 'rw'
+          - zookeeper_stats_parsed['Node count'] | int > 0
+          - zookeeper_stats_parsed['Mode'] in ['leader', 'follower']
+          - _zookeeper_modes | select('equalto', 'leader') | length == 1
+          - _zookeeper_modes | select('equalto', 'follower') | length == groups['zookeeper_all'] | length - 1
+
+    - name: Fetch data from Prometheus exporter
+      ansible.builtin.uri:
+        url: http://{{ zookeeper_node_address }}:7000/metrics
+        return_content: true
+      register: _zookeeper_prometheus
+
+    - name: Verify prometheus stats
+      vars:
+        _zookeeper_prometheus_content: "{{ _zookeeper_prometheus.content | split('\n') }}"
+      ansible.builtin.assert:
+        that:
+          - "'znode_count ' ~ zookeeper_stats_parsed['Node count'] ~ '.0' in _zookeeper_prometheus_content"
+          - "'quorum_size ' ~ groups['zookeeper_all'] | length ~ '.0' in _zookeeper_prometheus_content"

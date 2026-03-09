@@ -1,0 +1,5 @@
+---
+- name: Install zookeeper cluster
+  hosts: zookeeper_all
+  roles:
+    - role: zookeeper
