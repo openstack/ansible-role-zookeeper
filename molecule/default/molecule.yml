@@ -1,0 +1,67 @@
+---
+dependency:
+  name: galaxy
+  options:
+    requirements-file: requirements.yml
+driver:
+  name: docker
+platforms:
+  - name: zookeeper01
+    groups:
+      - zookeeper_all
+    image: "${DOCKER_REGISTRY:-quay.io/gotmax23}/${DOCKER_IMAGE_TAG:-debian-systemd:trixie}"
+    command: ${DOCKER_COMMAND:-""}
+    privileged: true
+    pre_build_image: true
+    docker_networks:
+      - name: "zookeeper"
+        ipam_config:
+          - subnet: "10.1.0.0/24"
+    networks:
+      - name: "zookeeper"
+        ipv4_address: "10.1.0.2"
+  - name: zookeeper02
+    groups:
+      - zookeeper_all
+    image: "${DOCKER_REGISTRY:-quay.io/gotmax23}/${DOCKER_IMAGE_TAG:-debian-systemd:trixie}"
+    command: ${DOCKER_COMMAND:-""}
+    privileged: true
+    pre_build_image: true
+    docker_networks:
+      - name: "zookeeper"
+        ipam_config:
+          - subnet: "10.1.0.0/24"
+    networks:
+      - name: "zookeeper"
+        ipv4_address: "10.1.0.3"
+  - name: zookeeper03
+    groups:
+      - zookeeper_all
+    image: "${DOCKER_REGISTRY:-quay.io/gotmax23}/${DOCKER_IMAGE_TAG:-debian-systemd:trixie}"
+    command: ${DOCKER_COMMAND:-""}
+    privileged: true
+    pre_build_image: true
+    docker_networks:
+      - name: "zookeeper"
+        ipam_config:
+          - subnet: "10.1.0.0/24"
+    networks:
+      - name: "zookeeper"
+        ipv4_address: "10.1.0.4"
+provisioner:
+  name: ansible
+  inventory:
+    links:
+      group_vars: ../../tests/group_vars/
+      host_vars: ../../tests/host_vars/
+  lint:
+    name: ansible-lint
+  playbooks:
+    prepare: ../../tests/prepare.yml
+    converge: ../../tests/test.yml
+    verify: ../../tests/verify.yml
+  config_options:
+    defaults:
+      inject_facts_as_vars: false
+scenario:
+  name: default

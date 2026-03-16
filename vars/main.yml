@@ -13,9 +13,4 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-zookeeper_cluster_id: >-
-  {%- for member in zookeeper_cluster_members -%}
-  {%-   if hostvars[member]['ansible_host'] == ansible_host -%}
-    {{ loop.index }}
-  {%-   endif -%}
-  {%- endfor -%}
+zookeeper_cluster_id: "{{ zookeeper_cluster_members.index(inventory_hostname) + 1 }}"

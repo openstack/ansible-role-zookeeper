@@ -92,7 +92,7 @@ zookeeper_pki_certificates:
   - name: "zookeeper_{{ ansible_facts['hostname'] }}"
     provider: ownca
     cn: "{{ hostvars[inventory_hostname][zookeeper_cluster_address_hostvars_key] }}"
-    san: "{{ 'DNS:' ~ ansible_facts['fqdn'] ~ ',IP:' ~ ansible_host }}"
+    san: "{{ 'DNS:' ~ ansible_facts['fqdn'] ~ ',IP:' ~ hostvars[inventory_hostname][zookeeper_cluster_address_hostvars_key] }}"
     signed_by: "{{ zookeeper_pki_intermediate_cert_name }}"
     condition: "{{ zookeeper_ssl_client_enable or zookeeper_ssl_quorum_enable }}"
     key_format: pkcs8

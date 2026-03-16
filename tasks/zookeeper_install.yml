@@ -17,6 +17,7 @@
   ansible.builtin.package:
     name: "{{ zookeeper_package_requirements }}"
     state: "{{ zookeeper_package_state }}"
+    update_cache: "{{ (ansible_facts['os_family'] | lower == 'debian') | ternary(true, omit) }}"
   register: install_packages
   until: install_packages is success
   retries: 5

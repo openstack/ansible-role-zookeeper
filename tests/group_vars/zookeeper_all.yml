@@ -1,0 +1,4 @@
+---
+zookeeper_cluster_address_hostvars_key: zookeeper_node_address
+zookeeper_prometheus_enable: true
+zookeeper_pki_dir: /tmp/pki/rabbitmq-ca
