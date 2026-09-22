@@ -1,10 +1,11 @@
 ---
 dependency:
   name: galaxy
-  options:
-    requirements-file: requirements.yml
+  enabled: false
+
 driver:
   name: docker
+
 platforms:
   - name: zookeeper01
     groups:
@@ -48,6 +49,7 @@ platforms:
     networks:
       - name: "zookeeper"
         ipv4_address: "10.1.0.4"
+
 provisioner:
   name: ansible
   inventory:
@@ -63,5 +65,6 @@ provisioner:
   config_options:
     defaults:
       inject_facts_as_vars: false
+
 scenario:
   name: default
