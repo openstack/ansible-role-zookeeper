@@ -91,7 +91,7 @@ zookeeper_pki_regen_cert: ""
 zookeeper_pki_backend: "{{ openstack_pki_backend | default('standalone') }}"
 zookeeper_pki_certificates:
   - name: "zookeeper_{{ ansible_facts['hostname'] }}"
-    cn: "{{ hostvars[inventory_hostname][zookeeper_cluster_address_hostvars_key] }}"
+    cn: "{{ ansible_facts['hostname'] }}"
     san: "{{ openstack_pki_san | default({'dns': [ansible_facts['fqdn']], 'ip': [hostvars[inventory_hostname][zookeeper_cluster_address_hostvars_key]]}) }}"
     condition: "{{ zookeeper_ssl_client_enable or zookeeper_ssl_quorum_enable }}"
     key_format: pkcs8

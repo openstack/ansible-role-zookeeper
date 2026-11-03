@@ -1,0 +1,11 @@
+---
+upgrade:
+  - |
+    Changed the default ``zookeeper_pki_certificates`` Common Name (CN)
+    from IP address to hostname.
+fixes:
+  - |
+    Fixed ``zookeeper_pki_certificates`` to avoid placing IP addresses in
+    the Certificate Common Name (CN) field. IP addresses are properly handled
+    via the SAN extension, which prevents validation failures when using external
+    PKI issuers with strict domain/name constraints.
